@@ -8,6 +8,10 @@ import {
   AssignPageAttributeVariables
 } from "./types/AssignPageAttribute";
 import {
+  PageTypeAttributeReorder,
+  PageTypeAttributeReorderVariables
+} from "./types/PageTypeAttributeReorder";
+import {
   PageTypeCreate,
   PageTypeCreateVariables
 } from "./types/PageTypeCreate";
@@ -95,3 +99,22 @@ export const useUnassignPageAttributeMutation = makeMutation<
   UnassignPageAttribute,
   UnassignPageAttributeVariables
 >(unassignPageAttributeMutation);
+
+const pageTypeAttributeReorder = gql`
+  ${pageTypeDetailsFragment}
+  ${pageErrorFragment}
+  mutation PageTypeAttributeReorder($move: ReorderInput!, $pageTypeId: ID!) {
+    pageTypeReorderAttributes(moves: [$move], pageTypeId: $pageTypeId) {
+      errors: pageErrors {
+        ...PageErrorFragment
+      }
+      pageType {
+        ...PageTypeDetailsFragment
+      }
+    }
+  }
+`;
+export const usePageTypeAttributeReorderMutation = makeMutation<
+  PageTypeAttributeReorder,
+  PageTypeAttributeReorderVariables
+>(pageTypeAttributeReorder);
