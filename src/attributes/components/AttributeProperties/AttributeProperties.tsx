@@ -10,7 +10,10 @@ import FormSpacer from "@saleor/components/FormSpacer";
 import Hr from "@saleor/components/Hr";
 import { ProductErrorFragment } from "@saleor/fragments/types/ProductErrorFragment";
 import { commonMessages } from "@saleor/intl";
-import { AttributeTypeEnum } from "@saleor/types/globalTypes";
+import {
+  AttributeInputTypeEnum,
+  AttributeTypeEnum
+} from "@saleor/types/globalTypes";
 import { getFormErrors, getProductErrorMessage } from "@saleor/utils/errors";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -76,39 +79,41 @@ const AttributeProperties: React.FC<AttributePropertiesProps> = ({
           />
         </Typography>
         <Hr />
-        {data.type === AttributeTypeEnum.PRODUCT_TYPE && (
-          <>
-            <ControlledCheckbox
-              name={"filterableInStorefront" as keyof FormData}
-              label={intl.formatMessage({
-                defaultMessage: "Use in Faceted Navigation",
-                description: "attribute is filterable in storefront"
-              })}
-              checked={data.filterableInStorefront}
-              onChange={onChange}
-              disabled={disabled}
-            />
-            <FormSpacer />
-          </>
-        )}
-        {data.filterableInStorefront &&
+        {data.inputType !== AttributeInputTypeEnum.FILE &&
           data.type === AttributeTypeEnum.PRODUCT_TYPE && (
-            <TextField
-              disabled={disabled}
-              error={!!formErrors.storefrontSearchPosition}
-              fullWidth
-              helperText={getProductErrorMessage(
-                formErrors.storefrontSearchPosition,
-                intl
+            <>
+              <ControlledCheckbox
+                name={"filterableInStorefront" as keyof FormData}
+                label={intl.formatMessage({
+                  defaultMessage: "Use in Faceted Navigation",
+                  description: "attribute is filterable in storefront"
+                })}
+                checked={data.filterableInStorefront}
+                onChange={onChange}
+                disabled={disabled}
+              />
+              <FormSpacer />
+              {data.filterableInStorefront && (
+                <TextField
+                  disabled={disabled}
+                  error={!!formErrors.storefrontSearchPosition}
+                  fullWidth
+                  helperText={getProductErrorMessage(
+                    formErrors.storefrontSearchPosition,
+                    intl
+                  )}
+                  name={
+                    "storefrontSearchPosition" as keyof AttributePageFormData
+                  }
+                  label={intl.formatMessage({
+                    defaultMessage: "Position in faceted navigation",
+                    description: "attribute position in storefront filters"
+                  })}
+                  value={data.storefrontSearchPosition}
+                  onChange={onChange}
+                />
               )}
-              name={"storefrontSearchPosition" as keyof AttributePageFormData}
-              label={intl.formatMessage({
-                defaultMessage: "Position in faceted navigation",
-                description: "attribute position in storefront filters"
-              })}
-              value={data.storefrontSearchPosition}
-              onChange={onChange}
-            />
+            </>
           )}
         <FormSpacer />
         <ControlledSwitch
@@ -128,50 +133,54 @@ const AttributeProperties: React.FC<AttributePropertiesProps> = ({
           onChange={onChange}
           disabled={disabled}
         />
-        <CardSpacer />
-        <Typography variant="subtitle1">
-          <FormattedMessage
-            defaultMessage="Dashboard Properties"
-            description="attribute properties regarding dashboard"
-          />
-        </Typography>
-        <Hr />
-        <CardSpacer />
-        <ControlledCheckbox
-          name={"filterableInDashboard" as keyof FormData}
-          label={
-            <>
+        {data.inputType !== AttributeInputTypeEnum.FILE && (
+          <>
+            <CardSpacer />
+            <Typography variant="subtitle1">
               <FormattedMessage
-                defaultMessage="Use in Filtering"
-                description="use attribute in filtering"
+                defaultMessage="Dashboard Properties"
+                description="attribute properties regarding dashboard"
               />
-              <Typography variant="caption">
-                <FormattedMessage defaultMessage="If enabled, you’ll be able to use this attribute to filter products in product list." />
-              </Typography>
-            </>
-          }
-          checked={data.filterableInDashboard}
-          onChange={onChange}
-          disabled={disabled}
-        />
-        <FormSpacer />
-        <ControlledCheckbox
-          name={"availableInGrid" as keyof FormData}
-          label={
-            <>
-              <FormattedMessage
-                defaultMessage="Add to Column Options"
-                description="add attribute as column in product list table"
-              />
-              <Typography variant="caption">
-                <FormattedMessage defaultMessage="If enabled this attribute can be used as a column in product table." />
-              </Typography>
-            </>
-          }
-          checked={data.availableInGrid}
-          onChange={onChange}
-          disabled={disabled}
-        />
+            </Typography>
+            <Hr />
+            <CardSpacer />
+            <ControlledCheckbox
+              name={"filterableInDashboard" as keyof FormData}
+              label={
+                <>
+                  <FormattedMessage
+                    defaultMessage="Use in Filtering"
+                    description="use attribute in filtering"
+                  />
+                  <Typography variant="caption">
+                    <FormattedMessage defaultMessage="If enabled, you’ll be able to use this attribute to filter products in product list." />
+                  </Typography>
+                </>
+              }
+              checked={data.filterableInDashboard}
+              onChange={onChange}
+              disabled={disabled}
+            />
+            <FormSpacer />
+            <ControlledCheckbox
+              name={"availableInGrid" as keyof FormData}
+              label={
+                <>
+                  <FormattedMessage
+                    defaultMessage="Add to Column Options"
+                    description="add attribute as column in product list table"
+                  />
+                  <Typography variant="caption">
+                    <FormattedMessage defaultMessage="If enabled this attribute can be used as a column in product table." />
+                  </Typography>
+                </>
+              }
+              checked={data.availableInGrid}
+              onChange={onChange}
+              disabled={disabled}
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );
